@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Coding Pizza Party Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .pizza-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .pizza-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pizza-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+        }
+
+        .pizza-header {
+            margin-bottom: 15px;
+        }
+
+        .pizza-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .pizza-description {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .slice-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .slice-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .tbd-input {
+            font-size: 1.5rem;
+            padding: 8px 12px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            width: 100px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            background: #764ba2;
+            transform: scale(1.1);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-set {
+            background: #10b981;
+            width: auto;
+            padding: 0 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            height: 40px;
+            margin-top: 10px;
+        }
+
+        .btn-set:hover {
+            background: #059669;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .reset-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .pizza-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reset-btn {
+                bottom: 20px;
+                right: 20px;
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .emoji {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍕 Vibe Coding Pizza Party 🍕</h1>
+            <p class="subtitle">Final Session Pizza Tracker</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-number" id="total-remaining">0</span>
+                <span class="stat-label">Total Slices Remaining</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="total-eaten">0</span>
+                <span class="stat-label">Slices Eaten</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number" id="percent-remaining">100%</span>
+                <span class="stat-label">Remaining</span>
+            </div>
+        </div>
+
+        <div class="pizza-grid" id="pizza-grid">
+            <!-- Pizza cards will be inserted here by JavaScript -->
+        </div>
+
+        <button class="reset-btn" onclick="resetAll()">🔄 Reset All Counts</button>
+    </div>
+
+    <script>
+        const pizzas = [
+            {
+                id: 'cheese',
+                name: 'Classic Cheese',
+                description: 'Mozzarella with Traditional Pizza Sauce',
+                initialSlices: 48
+            },
+            {
+                id: 'margherita',
+                name: 'Margherita Pizza',
+                description: 'Sliced Tomato, Fresh Garlic, Basil, and Mozzarella with Traditional Pizza Sauce',
+                initialSlices: 48
+            },
+            {
+                id: 'santorini',
+                name: 'Santorini',
+                description: 'Green Bell Peppers, Red Onion, Tomato, Black Olives and Feta with Traditional Pizza Sauce',
+                initialSlices: 24
+            },
+            {
+                id: 'pepperoni',
+                name: 'Pepperoni',
+                description: 'Freshly Sliced Pepperoni and Mozzarella with Traditional Pizza Sauce',
+                initialSlices: 64
+            },
+            {
+                id: 'cbr',
+                name: 'CBR',
+                description: 'BBQ Chicken, Sliced Tomatoes, Bacon, and Caramelized Onions with White Ranch Sauce',
+                initialSlices: 32
+            },
+            {
+                id: 'hawaiian',
+                name: 'Hawaiian',
+                description: 'Bacon, Ham, Pineapple and Mozzarella with Traditional Pizza Sauce',
+                initialSlices: 24
+            },
+            {
+                id: 'vegan',
+                name: 'Vegan',
+                description: 'Plant-based goodness',
+                initialSlices: null,
+                isTBD: true
+            },
+            {
+                id: 'gf',
+                name: 'Gluten-Free',
+                description: 'GF crust',
+                initialSlices: null,
+                isTBD: true
+            },
+            {
+                id: 'df-gf',
+                name: 'Dairy-Free & Gluten-Free',
+                description: 'DF + GF options',
+                initialSlices: null,
+                isTBD: true
+            }
+        ];
+
+        let sliceCounts = {};
+
+        // Initialize or load from localStorage
+        function init() {
+            const saved = localStorage.getItem('pizzaTracker');
+            if (saved) {
+                sliceCounts = JSON.parse(saved);
+            } else {
+                pizzas.forEach(pizza => {
+                    sliceCounts[pizza.id] = {
+                        current: pizza.initialSlices || 0,
+                        initial: pizza.initialSlices || 0
+                    };
+                });
+            }
+            renderPizzas();
+            updateStats();
+        }
+
+        function renderPizzas() {
+            const grid = document.getElementById('pizza-grid');
+            grid.innerHTML = '';
+
+            pizzas.forEach(pizza => {
+                const card = document.createElement('div');
+                card.className = 'pizza-card';
+
+                const count = sliceCounts[pizza.id];
+                const isTBD = pizza.isTBD && count.initial === 0;
+
+                card.innerHTML = `
+                    <div class="pizza-header">
+                        <div class="pizza-name">${pizza.name}</div>
+                        <div class="pizza-description">${pizza.description}</div>
+                    </div>
+
+                    ${isTBD ? `
+                        <div style="text-align: center; margin: 20px 0;">
+                            <input type="number"
+                                   class="tbd-input"
+                                   id="input-${pizza.id}"
+                                   placeholder="TBD"
+                                   min="0"
+                                   value="">
+                            <button class="btn btn-set" onclick="setInitialCount('${pizza.id}')">Set Count</button>
+                        </div>
+                    ` : `
+                        <div class="slice-controls">
+                            <button class="btn" onclick="decrementSlice('${pizza.id}')" ${count.current <= 0 ? 'disabled' : ''}>−</button>
+                            <div class="slice-count">${count.current}</div>
+                            <button class="btn" onclick="incrementSlice('${pizza.id}')" ${count.current >= count.initial ? 'disabled' : ''}>+</button>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${(count.current / count.initial * 100) || 0}%"></div>
+                        </div>
+                        <div class="progress-text">${count.current} of ${count.initial} slices remaining</div>
+                    `}
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function setInitialCount(pizzaId) {
+            const input = document.getElementById(`input-${pizzaId}`);
+            const value = parseInt(input.value);
+
+            if (value > 0) {
+                sliceCounts[pizzaId] = {
+                    current: value,
+                    initial: value
+                };
+                save();
+                renderPizzas();
+                updateStats();
+            }
+        }
+
+        function incrementSlice(pizzaId) {
+            if (sliceCounts[pizzaId].current < sliceCounts[pizzaId].initial) {
+                sliceCounts[pizzaId].current++;
+                save();
+                renderPizzas();
+                updateStats();
+            }
+        }
+
+        function decrementSlice(pizzaId) {
+            if (sliceCounts[pizzaId].current > 0) {
+                sliceCounts[pizzaId].current--;
+                save();
+                renderPizzas();
+                updateStats();
+            }
+        }
+
+        function updateStats() {
+            let totalRemaining = 0;
+            let totalInitial = 0;
+
+            Object.values(sliceCounts).forEach(count => {
+                if (count.initial > 0) {
+                    totalRemaining += count.current;
+                    totalInitial += count.initial;
+                }
+            });
+
+            const totalEaten = totalInitial - totalRemaining;
+            const percentRemaining = totalInitial > 0 ? Math.round((totalRemaining / totalInitial) * 100) : 100;
+
+            document.getElementById('total-remaining').textContent = totalRemaining;
+            document.getElementById('total-eaten').textContent = totalEaten;
+            document.getElementById('percent-remaining').textContent = percentRemaining + '%';
+        }
+
+        function save() {
+            localStorage.setItem('pizzaTracker', JSON.stringify(sliceCounts));
+        }
+
+        function resetAll() {
+            if (confirm('Are you sure you want to reset all slice counts? This will restore all pizzas to their initial amounts.')) {
+                pizzas.forEach(pizza => {
+                    sliceCounts[pizza.id] = {
+                        current: pizza.initialSlices || 0,
+                        initial: pizza.initialSlices || 0
+                    };
+                });
+                save();
+                renderPizzas();
+                updateStats();
+            }
+        }
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+</html>
