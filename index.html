@@ -277,7 +277,28 @@
         <button class="reset-btn" onclick="resetAll()">🔄 Reset All Counts</button>
     </div>
 
-    <script>
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLWAUN2o8PLV36UIRaReW9tl8RMXlsZUY",
+            authDomain: "pizza-slice-tracker.firebaseapp.com",
+            databaseURL: "https://pizza-slice-tracker-default-rtdb.firebaseio.com",
+            projectId: "pizza-slice-tracker",
+            storageBucket: "pizza-slice-tracker.firebasestorage.app",
+            messagingSenderId: "702074906286",
+            appId: "1:702074906286:web:d46e907d19f9a6dc232f3f",
+            measurementId: "G-5RRGD65MPH"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const pizzaDataRef = ref(database, 'pizzaSlices');
+
         const pizzas = [
             {
                 id: 'cheese',
@@ -339,22 +360,33 @@
         ];
 
         let sliceCounts = {};
+        let isInitializing = true;
 
-        // Initialize or load from localStorage
+        // Initialize and listen to Firebase
         function init() {
-            const saved = localStorage.getItem('pizzaTracker');
-            if (saved) {
-                sliceCounts = JSON.parse(saved);
-            } else {
-                pizzas.forEach(pizza => {
-                    sliceCounts[pizza.id] = {
-                        current: pizza.initialSlices || 0,
-                        initial: pizza.initialSlices || 0
-                    };
-                });
-            }
-            renderPizzas();
-            updateStats();
+            // Listen for real-time updates from Firebase
+            onValue(pizzaDataRef, (snapshot) => {
+                const data = snapshot.val();
+
+                if (data) {
+                    // Data exists in Firebase, use it
+                    sliceCounts = data;
+                } else if (isInitializing) {
+                    // No data in Firebase yet, initialize with defaults
+                    pizzas.forEach(pizza => {
+                        sliceCounts[pizza.id] = {
+                            current: pizza.initialSlices || 0,
+                            initial: pizza.initialSlices || 0
+                        };
+                    });
+                    // Save initial state to Firebase
+                    set(pizzaDataRef, sliceCounts);
+                }
+
+                isInitializing = false;
+                renderPizzas();
+                updateStats();
+            });
         }
 
         function renderPizzas() {
@@ -407,31 +439,28 @@
             const value = parseInt(input.value);
 
             if (value > 0) {
-                sliceCounts[pizzaId] = {
+                const updates = {};
+                updates[pizzaId] = {
                     current: value,
                     initial: value
                 };
-                save();
-                renderPizzas();
-                updateStats();
+                update(pizzaDataRef, updates);
             }
         }
 
         function incrementSlice(pizzaId) {
             if (sliceCounts[pizzaId].current < sliceCounts[pizzaId].initial) {
-                sliceCounts[pizzaId].current++;
-                save();
-                renderPizzas();
-                updateStats();
+                const updates = {};
+                updates[`${pizzaId}/current`] = sliceCounts[pizzaId].current + 1;
+                update(pizzaDataRef, updates);
             }
         }
 
         function decrementSlice(pizzaId) {
             if (sliceCounts[pizzaId].current > 0) {
-                sliceCounts[pizzaId].current--;
-                save();
-                renderPizzas();
-                updateStats();
+                const updates = {};
+                updates[`${pizzaId}/current`] = sliceCounts[pizzaId].current - 1;
+                update(pizzaDataRef, updates);
             }
         }
 
@@ -454,23 +483,24 @@
             document.getElementById('percent-remaining').textContent = percentRemaining + '%';
         }
 
-        function save() {
-            localStorage.setItem('pizzaTracker', JSON.stringify(sliceCounts));
-        }
-
         function resetAll() {
             if (confirm('Are you sure you want to reset all slice counts? This will restore all pizzas to their initial amounts.')) {
+                const resetData = {};
                 pizzas.forEach(pizza => {
-                    sliceCounts[pizza.id] = {
+                    resetData[pizza.id] = {
                         current: pizza.initialSlices || 0,
                         initial: pizza.initialSlices || 0
                     };
                 });
-                save();
-                renderPizzas();
-                updateStats();
+                set(pizzaDataRef, resetData);
             }
         }
+
+        // Make functions globally accessible for onclick handlers
+        window.setInitialCount = setInitialCount;
+        window.incrementSlice = incrementSlice;
+        window.decrementSlice = decrementSlice;
+        window.resetAll = resetAll;
 
         // Initialize on page load
         init();
