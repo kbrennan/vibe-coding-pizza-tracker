@@ -1,50 +1,45 @@
 # Stream Deck Setup Guide
 
-This guide will help you configure your Stream Deck to track pizza slices at your party!
+This guide will help you configure your Stream Deck to track pizza slices at your party using keyboard shortcuts!
 
 ## How It Works
 
-Each Stream Deck button opens a special URL that automatically decrements a specific pizza type and shows a confirmation message. The change syncs instantly to all connected devices via Firebase.
+The pizza tracker listens for keyboard number keys (1-9). Each Stream Deck button is configured to send a keyboard shortcut (like pressing "1" on your keyboard) to the browser window. When the tracker receives the keypress, it automatically decrements that pizza type and shows a visual confirmation. The change syncs instantly to all connected devices via Firebase.
 
-## URL Format
+**No browser windows open!** The tracker just needs to be open in a browser window in the foreground.
 
-```
-https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=PIZZA_ID
-```
+## Keyboard Shortcuts
 
-## Pizza IDs
-
-Use these IDs in your URLs:
-
-| Pizza Type | ID | URL |
-|------------|----|----|
-| Classic Cheese | `cheese` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=cheese` |
-| Margherita Pizza | `margherita` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=margherita` |
-| Santorini | `santorini` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=santorini` |
-| Pepperoni | `pepperoni` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=pepperoni` |
-| CBR | `cbr` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=cbr` |
-| Hawaiian | `hawaiian` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=hawaiian` |
-| Vegan | `vegan` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=vegan` |
-| Gluten-Free | `gf` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=gf` |
-| Dairy-Free & GF | `df-gf` | `https://kbrennan.github.io/vibe-coding-pizza-tracker/?action=take&pizza=df-gf` |
+| Key | Pizza Type |
+|-----|------------|
+| **1** | Classic Cheese |
+| **2** | Margherita Pizza |
+| **3** | Santorini |
+| **4** | Pepperoni |
+| **5** | CBR |
+| **6** | Hawaiian |
+| **7** | Vegan |
+| **8** | Gluten-Free |
+| **9** | Dairy-Free & GF |
 
 ## Stream Deck Setup Instructions
 
-### Step 1: Add Website Action
+### Step 1: Add Hotkey Action
 
 1. Open the **Stream Deck** software on your computer
-2. Drag the **Website** action onto a button
-3. Or search for "Website" in the actions panel and drag it to your Stream Deck
+2. Search for **"Hotkey"** or **"System: Hotkey"** in the actions panel
+3. Drag the **Hotkey** action onto a button
 
 ### Step 2: Configure Each Button
 
 For each pizza type you want to track:
 
 1. **Select the button** you just created
-2. In the **URL** field, paste the corresponding URL from the table above
-3. **Title**: Enter the pizza name (e.g., "Cheese", "Pepperoni")
-4. **Optional**: Add an icon or emoji (🍕) for visual appeal
-5. Repeat for each pizza type
+2. Click in the **Hotkey** field
+3. Press the corresponding number key (1-9) from the table above
+4. **Title**: Enter the pizza name (e.g., "Cheese", "Pepperoni")
+5. **Optional**: Add an icon or emoji (🍕) for visual appeal
+6. Repeat for each pizza type
 
 ### Step 3: Button Layout Example
 
@@ -67,51 +62,74 @@ Here's a suggested 3x3 layout:
 
 ## How to Use at the Party
 
-1. **Display the tracker**: Open https://kbrennan.github.io/vibe-coding-pizza-tracker/ on a TV or monitor
-2. **Hand out slices**: When someone takes a slice, press the corresponding Stream Deck button
-3. **Instant feedback**: The tracker updates immediately and shows a confirmation message
-4. **Real-time sync**: All devices viewing the page see the update instantly
+1. **Open the tracker**: Open https://kbrennan.github.io/vibe-coding-pizza-tracker/ in a browser window
+2. **Keep window focused**: Make sure the browser window stays in focus (active window)
+3. **Display on screen**: Optionally mirror/extend to a TV or projector so everyone can see
+4. **Press Stream Deck buttons**: When someone takes a slice, press the corresponding button
+5. **Instant feedback**: The tracker shows a visual notification and updates immediately
+6. **Real-time sync**: All devices viewing the page see the update instantly via Firebase
+
+## Important Setup Notes
+
+### Browser Window Must Be Active
+- The keyboard shortcuts only work when the browser window is **in focus** (active/foreground)
+- If you switch to another app, the shortcuts won't work
+- Consider dedicating a computer/tablet to run the tracker in full-screen mode
+
+### Full-Screen Mode (Recommended)
+1. Open the tracker URL
+2. Press **F11** (Windows/Linux) or **Cmd+Ctrl+F** (Mac) for full-screen
+3. Connect to TV/monitor for party display
+4. Keep this window active while using Stream Deck
 
 ## Advanced Tips
 
-### Custom Browser
-- By default, Stream Deck opens URLs in your default browser
-- You can configure it to use a specific browser in Stream Deck settings
+### Multiple Displays
+- Display the tracker on a TV/projector for everyone to see
+- Keep the browser window active on your computer where the Stream Deck is connected
+- The visual notifications will appear on all screens
+
+### Testing Keyboard Shortcuts
+- Before setting up Stream Deck, test the shortcuts manually
+- Open the tracker and press number keys 1-9 on your keyboard
+- You should see the slice counts decrease and notifications appear
 
 ### Multiple Stream Decks
-- Set up multiple Stream Decks around the pizza table
+- Set up multiple Stream Decks on different computers
+- Each computer opens the tracker in a browser
 - All will sync through Firebase automatically
-
-### Testing
-- Before the party, test each button to make sure URLs work correctly
-- You can reset counts using the red "Reset All Counts" button on the web page
-
-### Visual Display
-- Consider keeping the tracker open in full-screen mode on a large display
-- The animated notification will appear when buttons are pressed
 
 ## Troubleshooting
 
 **Button doesn't work:**
-- Check the URL is copied correctly
-- Make sure there are no extra spaces
-- Verify the pizza ID matches exactly (case-sensitive)
+- Make sure the browser window with the tracker is **active/in focus**
+- Verify the hotkey is configured correctly (should just be the number key, no modifiers)
+- Test the keyboard shortcut manually by pressing the number key
 
 **No visual feedback:**
-- Make sure you're viewing the page when pressing the button
+- Ensure the tracker webpage is loaded completely
 - Check your internet connection (Firebase needs connectivity)
+- Make sure you're not typing in an input field
 
 **Count doesn't decrease:**
 - Ensure the pizza has slices remaining (can't go below 0)
 - Verify Firebase is initialized (wait ~2 seconds after page load)
+- Check the browser console for any errors (F12)
 
-## Alternative: QR Codes
+**Stream Deck sends the number to another app:**
+- The browser window must be the active window
+- Click on the browser window before pressing Stream Deck buttons
+- Consider using full-screen mode to prevent accidental focus loss
 
-If you don't have a Stream Deck, you can create QR codes for each URL:
+## Alternative: Manual Keyboard Entry
 
-1. Use a QR code generator: https://www.qr-code-generator.com/
-2. Generate a QR code for each pizza URL
-3. Print and place them near the pizza boxes
-4. People scan with their phones to register their slice choice
+If you don't have a Stream Deck, you can simply press the number keys on your keyboard:
+
+- Press **1** for Cheese
+- Press **2** for Margherita
+- Press **3** for Santorini
+- And so on...
+
+The tracker works exactly the same way!
 
 Enjoy your party! 🍕

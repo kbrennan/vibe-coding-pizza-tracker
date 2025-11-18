@@ -557,6 +557,47 @@
             }, 2000);
         }
 
+        // Keyboard shortcuts for Stream Deck integration
+        const KEYBOARD_SHORTCUTS = {
+            '1': 'cheese',          // Num 1: Classic Cheese
+            '2': 'margherita',      // Num 2: Margherita
+            '3': 'santorini',       // Num 3: Santorini
+            '4': 'pepperoni',       // Num 4: Pepperoni
+            '5': 'cbr',             // Num 5: CBR
+            '6': 'hawaiian',        // Num 6: Hawaiian
+            '7': 'vegan',           // Num 7: Vegan
+            '8': 'gf',              // Num 8: Gluten-Free
+            '9': 'df-gf'            // Num 9: Dairy-Free & GF
+        };
+
+        // Handle keyboard events
+        document.addEventListener('keydown', (event) => {
+            // Ignore if user is typing in an input field
+            if (event.target.tagName === 'INPUT') {
+                return;
+            }
+
+            const key = event.key;
+            const pizzaId = KEYBOARD_SHORTCUTS[key];
+
+            if (pizzaId && sliceCounts[pizzaId]) {
+                event.preventDefault();
+
+                // Check if pizza has slices remaining
+                if (sliceCounts[pizzaId].current > 0) {
+                    decrementSlice(pizzaId);
+
+                    // Show visual feedback
+                    const pizzaName = pizzas.find(p => p.id === pizzaId)?.name;
+                    showNotification(`🍕 ${pizzaName} - Slice taken!`);
+                } else {
+                    // Show "out of stock" message
+                    const pizzaName = pizzas.find(p => p.id === pizzaId)?.name;
+                    showNotification(`❌ ${pizzaName} - No slices remaining!`);
+                }
+            }
+        });
+
         // Make functions globally accessible for onclick handlers
         window.setInitialCount = setInitialCount;
         window.incrementSlice = incrementSlice;
