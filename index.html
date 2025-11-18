@@ -496,6 +496,67 @@
             }
         }
 
+        // Stream Deck Integration: Check URL parameters for pizza actions
+        function handleStreamDeckAction() {
+            const params = new URLSearchParams(window.location.search);
+            const action = params.get('action');
+            const pizza = params.get('pizza');
+
+            if (action === 'take' && pizza) {
+                // Wait for Firebase to load data first
+                setTimeout(() => {
+                    if (sliceCounts[pizza] && sliceCounts[pizza].current > 0) {
+                        decrementSlice(pizza);
+
+                        // Show visual feedback
+                        showNotification(`Pizza taken: ${pizzas.find(p => p.id === pizza)?.name || pizza}`);
+
+                        // Clear the URL parameters after action
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }, 1000);
+            }
+        }
+
+        // Show notification overlay
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(102, 126, 234, 0.95);
+                color: white;
+                padding: 30px 50px;
+                border-radius: 20px;
+                font-size: 1.5rem;
+                font-weight: bold;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: fadeInOut 2s ease-in-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Add animation styles
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeInOut {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                    20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            setTimeout(() => {
+                notification.remove();
+                style.remove();
+            }, 2000);
+        }
+
         // Make functions globally accessible for onclick handlers
         window.setInitialCount = setInitialCount;
         window.incrementSlice = incrementSlice;
@@ -504,6 +565,7 @@
 
         // Initialize on page load
         init();
+        handleStreamDeckAction();
     </script>
 </body>
 </html>
