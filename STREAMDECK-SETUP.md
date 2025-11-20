@@ -20,7 +20,7 @@ The pizza tracker listens for keyboard number keys (1-9). Each Stream Deck butto
 | **6** | Hawaiian |
 | **7** | Dairy-Free (plant-based & non-plant-based) |
 | **8** | Gluten-Free (plant-based & non-plant-based) |
-| **9** | Dairy-Free & Gluten-Free |
+| **9** | Dairy-Free & Gluten-Free (plant-based & non-plant-based) |
 
 ## Stream Deck Setup Instructions
 
