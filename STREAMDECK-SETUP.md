@@ -18,9 +18,9 @@ The pizza tracker listens for keyboard number keys (1-9). Each Stream Deck butto
 | **4** | Pepperoni |
 | **5** | CBR |
 | **6** | Hawaiian |
-| **7** | Vegan |
-| **8** | Gluten-Free |
-| **9** | Dairy-Free & GF |
+| **7** | Dairy-Free (plant-based & non-plant-based) |
+| **8** | Gluten-Free (plant-based & non-plant-based) |
+| **9** | Dairy-Free & Gluten-Free |
 
 ## Stream Deck Setup Instructions
 
@@ -55,8 +55,8 @@ Here's a suggested 3x3 layout:
 │     🌶️     │     🍗     │     🍍     │
 └────────────┴────────────┴────────────┘
 ┌────────────┬────────────┬────────────┐
-│   Vegan    │     GF     │   DF+GF    │
-│     🌱     │   GF 🍕    │   DF+GF    │
+│ Dairy-Free │     GF     │   DF+GF    │
+│     🥛     │     🌾     │   DF+GF    │
 └────────────┴────────────┴────────────┘
 ```
 
